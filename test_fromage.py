@@ -1,12 +1,12 @@
 import pytest
 import sqlite3
-from fromage import CheeseETL
+from fromage import FromageETL
 
 @pytest.fixture
 def etl_instance():
     url = 'https://www.laboitedufromager.com/liste-des-fromages-par-ordre-alphabetique/'
     db_path = ':memory:'  # Utilisation d'une base de données en mémoire pour les tests
-    return CheeseETL(url, db_path)
+    return FromageETL(url, db_path)
 
 def test_extract(etl_instance):
     html_content = etl_instance.extract()

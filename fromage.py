@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import pandas as pd
 
-class CheeseETL:
+class FromageETL:
     """ fromage class """
     def __init__(self, URL, db_path ):
         """ Constructeur """
@@ -38,9 +38,9 @@ class CheeseETL:
                 # Supposons que les colonnes de la table sont dans l'ordre :fromage, famille, pâte
                 for row in table.find_all('tr')[1:]:  # Commencer à la deuxième ligne pour éviter les en-têtes
                     columns = row.find_all('td')
-                    fromage = columns[0].text.strip()
-                    family = columns[1].text.strip()
-                    paste = columns[2].text.strip()
+                    fromage = columns[0].text.strip().replace('', '')
+                    family = columns[1].text.strip().replace('', '')
+                    paste = columns[2].text.strip().replace('', '')
                     creation_date = datetime.now().strftime('%Y-%m-%d')
 
                     data_fromage.append((fromage, family, paste, creation_date))
@@ -97,7 +97,7 @@ class CheeseETL:
 url = 'https://www.laboitedufromager.com/liste-des-fromages-par-ordre-alphabetique/'
 DB_PATH = 'fromage_database.db'
 
-etl = CheeseETL(url, DB_PATH)
+etl = FromageETL(url, DB_PATH)
 etl.run_etl()
 
 # Lire les données depuis la base de données avec Pandas
