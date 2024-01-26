@@ -24,7 +24,6 @@ class FromageETL:
         else:
             print(f"échec de la récupération de la page. Status code: {response.status_code}")
             return None
-        
     def transform(self, html_content):
         # fonction qui fait la transformation .
         if html_content:
@@ -51,6 +50,7 @@ class FromageETL:
             return None
     # fonction pour la connection
     def load(self, data):
+        """.... """
         if data:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
