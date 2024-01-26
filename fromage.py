@@ -120,6 +120,7 @@ class FromageETL:
 
     # fonction qui execute etl
     def run_etl(self):
+        
         html_content = self.extract()
         transformed_data = self.transform(html_content)
         self.load(transformed_data)
@@ -140,6 +141,6 @@ counts_by_letter = etl.group_by_letter()
 #print(counts_by_letter)
 # Utilisation de la nouvelle méthode
 counts_by_family = etl.group_by_family()
-#print(counts_by_family)
+print(counts_by_family)
 counts_by_first_letter = etl.group_by_first_letter_of_family()
-print(counts_by_first_letter)
+#print(counts_by_first_letter)

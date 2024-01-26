@@ -33,23 +33,3 @@ def test_transform(etl_instance):
 
 #     assert count == len(transformed_data)
 
-# def test_get_dataframe_from_db(etl_instance):
-#     transformed_data = [('Cheese3', 'Family3', 'Paste3', '2022-01-03'),
-#                         ('Cheese4', 'Family4', 'Paste4', '2022-01-04')]
-
-#     etl_instance.load(transformed_data)
-
-#     # Vérifier que les données peuvent être lues avec Pandas
-#     df = etl_instance.get_dataframe_from_db()
-#     assert len(df) == len(transformed_data)
-
-#     # Vérifier que les colonnes sont présentes
-#     expected_columns = ['id', 'fromage', 'family', 'paste', 'creation_date']
-#     assert all(col in df.columns for col in expected_columns)
-
-#     # Vérifier que les données correspondent
-#     for i, row in enumerate(transformed_data):
-#         for j, col in enumerate(expected_columns[1:]):  # Ignorer la colonne 'id'
-#             assert df.at[i, col] == row[j]
-
-# # Autres tests peuvent être ajoutés selon les besoins
