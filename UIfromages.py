@@ -38,7 +38,7 @@ class FromageETLUI(tk.Tk):
 
         # Création du diagramme en camembert
         fig, ax = plt.subplots()
-        ax.pie(counts_by_family['cheese_count'], labels=counts_by_family['family'], autopct='%2.1f%%', startangle=90)
+        ax.pie(counts_by_family['cheese_count'], labels=counts_by_family['family'], autopct='%2.1f%%', startangle=90,counterclock=False)
         ax.axis('equal')
 
         # Affichage du diagramme dans la fenêtre Tkinter

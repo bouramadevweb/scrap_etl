@@ -1,8 +1,8 @@
 import sqlite3
 import requests
 import pandas as pd
-from datetime import datetime
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 class FromageETL:
     def __init__(self, url, db_path):
@@ -127,7 +127,7 @@ etl = FromageETL(url, DB_PATH)
 etl.run_etl()
 
 # Lire les données depuis la base de données avec Pandas
-df_from_db = etl.get_dataframe_from_db()
+# df_from_db = etl.get_dataframe_from_db()
 
 # Afficher le DataFrame
 #print(df_from_db)
