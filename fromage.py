@@ -1,17 +1,17 @@
 """
 Module de gestion ETL pour le traitement des données sur les fromages.
 """
-import  requests
 import  sqlite3
-from bs4 import BeautifulSoup
-from datetime import datetime
+import  requests
 import pandas as pd
+from datetime import datetime
+from bs4 import BeautifulSoup
 
 class FromageETL:
     """ fromage class """
-    def __init__(self, URL, db_path ):
+    def __init__(self, url, db_path ):
         """ Constructeur """
-        self.url = URL
+        self.url = url
         self.db_path = db_path
     # fonction extration
     def extract(self):
@@ -24,9 +24,9 @@ class FromageETL:
         else:
             print(f"échec de la récupération de la page. Status code: {response.status_code}")
             return None
-    # fonction qui fait la transformation
+        
     def transform(self, html_content):
-
+        # fonction qui fait la transformation .
         if html_content:
             soup = BeautifulSoup(html_content, 'html.parser')
             data_fromage = []
@@ -35,15 +35,15 @@ class FromageETL:
             table = soup.find('table')
 
             if table:
-                # Supposons que les colonnes de la table sont dans l'ordre :fromage, famille, pâte
+                #  les colonnes de la table dans l'ordre :fromage, famille, pâte ,date
                 for row in table.find_all('tr')[1:]:  # Commencer à la deuxième ligne pour éviter les en-têtes
                     columns = row.find_all('td')
                     fromage = columns[0].text.strip().replace('', '')
                     family = columns[1].text.strip().replace('', '')
                     paste = columns[2].text.strip().replace('', '')
-                    creation_date = datetime.now().strftime('%Y-%m-%d')
+                    date = datetime.now().strftime('%Y-%m-%d')
 
-                    data_fromage.append((fromage, family, paste, creation_date))
+                    data_fromage.append((fromage, family, paste, date))
             return data_fromage
             
 
@@ -62,13 +62,13 @@ class FromageETL:
                     fromage TEXT,
                     family TEXT,
                     paste TEXT,
-                    creation_date TEXT
+                    date TEXT
                 )
             ''')
 
             # Insérer les données dans la table
             cursor.executemany('''
-                INSERT INTO cheese_ods (fromage, family, paste, creation_date)
+                INSERT INTO cheese_ods (fromage, family, paste, date)
                 VALUES (?, ?, ?, ?)
             ''', data)
 
@@ -87,6 +87,37 @@ class FromageETL:
         df = pd.read_sql_query(query, conn)
         conn.close()
         return df
+    def group_by_letter(self):
+        """Charger les données depuis la base de données ."""
+        df = self.get_dataframe_from_db()
+
+        # Ajouter une colonne 'letter' représentant la première lettre du nom du fromage
+        df['letter'] = df['fromage'].str[0].str.upper()
+
+        # Grouper par la lettre et compter le nombre de fromages pour chaque lettre
+        counts = df.groupby('letter').size().reset_index(name='cheese_count')
+
+        return counts 
+    def group_by_family(self):
+        # Charger les données depuis la base de données
+        df = self.get_dataframe_from_db()
+
+        # Grouper par la colonne 'family' et compter le nombre de fromages pour chaque famille
+        counts = df.groupby('family').size().reset_index(name='cheese_count')
+
+        return counts
+    def group_by_first_letter_of_family(self):
+        # Charger les données depuis la base de données
+        df = self.get_dataframe_from_db()
+
+        # Ajouter une colonne 'family_first_letter' représentant la première lettre de la famille
+        df['family_first_letter'] = df['family'].str[0].str.upper()
+
+        # Grouper par la première lettre de la famille et compter le nombre de fromages pour chaque lettre
+        counts = df.groupby('family_first_letter').size().reset_index(name='cheese_count')
+
+        return counts
+
     # fonction qui execute etl
     def run_etl(self):
         html_content = self.extract()
@@ -105,3 +136,10 @@ df_from_db = etl.get_dataframe_from_db()
 
 # Afficher le DataFrame
 print(df_from_db)
+counts_by_letter = etl.group_by_letter()
+#print(counts_by_letter)
+# Utilisation de la nouvelle méthode
+counts_by_family = etl.group_by_family()
+#print(counts_by_family)
+counts_by_first_letter = etl.group_by_first_letter_of_family()
+print(counts_by_first_letter)
